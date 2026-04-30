@@ -1,5 +1,27 @@
 use clap::{Parser, Subcommand};
+use serde::Deserialize;
 use std::process::Command;
+
+#[derive(Deserialize)]
+struct DescribeVolumes {
+    #[serde(rename = "Volumes")]
+    volumes: Vec<Volume>,
+}
+
+#[derive(Deserialize)]
+struct Volume {
+    #[serde(rename = "VolumeId")]
+    volume_id: String,
+
+    #[serde(rename = "Size")]
+    size: i32,
+
+    #[serde(rename = "Attachments")]
+    attachments: Vec<Attachment>,
+}
+
+#[derive(Deserialize)]
+struct Attachment {}
 
 #[derive(Parser)]
 #[command(name = "cloudops-scan-ce")]
@@ -51,7 +73,7 @@ fn main() {
             println!("Running scan ...");
             println!("Profile: {:?}", profile);
             println!("File: {:?}", file);
-            println!("{}", json_output);
+            println!("Input size: {} bytes", json_output.len());
         }
     }
 }
