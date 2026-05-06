@@ -1,79 +1,42 @@
-use clap::{Parser, Subcommand};
-use serde::Deserialize;
-use std::process::Command;
+mod aws;
+mod cli;
+mod ec2;
 
-#[derive(Deserialize)]
-struct DescribeVolumes {
-    #[serde(rename = "Volumes")]
-    volumes: Vec<Volume>,
-}
-
-#[derive(Deserialize)]
-struct Volume {
-    #[serde(rename = "VolumeId")]
-    volume_id: String,
-
-    #[serde(rename = "Size")]
-    size: i32,
-
-    #[serde(rename = "Attachments")]
-    attachments: Vec<Attachment>,
-}
-
-#[derive(Deserialize)]
-struct Attachment {}
-
-#[derive(Parser)]
-#[command(name = "cloudops-scan-ce")]
-#[command(about = "AWS waste detection CLI", long_about = None)]
-struct Cli {
-    #[command(subcommand)]
-    command: Commands,
-}
-
-#[derive(Subcommand)]
-enum Commands {
-    // Scan AWS Resources
-    Scan {
-        // Profile to use if supplied
-        #[arg(long)]
-        profile: Option<String>,
-
-        // Use local JSON file instead of AWS CLI
-        #[arg(long)]
-        file: Option<String>,
-    },
-}
+use clap::{Parser};
+use cli::{Cli, Commands};
+use ec2::models::DescribeVolumes;
 
 fn main() {
     let cli = Cli::parse();
 
     match cli.command {
         Commands::Scan { profile, file } => {
-            let json_output = if let Some(file_path) = &file {
-                std::fs::read_to_string(file_path).expect("Failed to read file")
+            let json_output = if let Some(file_path) = file {
+                aws::read_json_file(&file_path)
             } else {
-                let mut cmd = Command::new("aws");
-
-                if let Some(profile_name) = &profile {
-                    cmd.args(["--profile", profile_name]);
-                }
-
-                let output = cmd
-                    .args(["ec2", "describe-volumes", "--output", "json"])
-                    .output()
-                    .expect("Failed to execute AWS CLI");
-
-                if !output.status.success() {
-                    panic!("AWS CLI command failed");
-                }
-
-                String::from_utf8_lossy(&output.stdout).to_string()
+                aws::get_volumes_json(profile.as_deref())
             };
-            println!("Running scan ...");
-            println!("Profile: {:?}", profile);
-            println!("File: {:?}", file);
-            println!("Input size: {} bytes", json_output.len());
+
+            let parsed: DescribeVolumes = serde_json::from_str(&json_output).expect("Failed to parse JSON");
+
+            let unused_volumes = ec2::rules::find_unattached_volumes(&parsed.volumes);
+
+            if unused_volumes.is_empty() {
+                println!("No unused volumes found.");
+            } else {
+                println!("Unattached EBS volumes:");
+
+                for v in unused_volumes {
+                    match v.size {
+                        Some(size) => {
+                            println!("- {} (Size: {} GiB)", v.volume_id, size);
+                        }
+                        None => {
+                            println!("- {} (Size: unknown)", v.volume_id);
+                        }
+                    }
+                }
+            }
         }
     }
 }
