@@ -13,12 +13,11 @@ pub struct Volume {
     #[serde(rename = "VolumeId")]
     pub volume_id: String,
 
-    #[serde(rename = "Size")]
+    #[serde(rename = "Size", default)]
     pub size: Option<i32>,
 
     #[serde(rename = "Attachments", default)]
     pub attachments: Vec<Attachment>,
-
 }
 
 /// An EBS volume attachment.
