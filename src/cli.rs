@@ -6,22 +6,34 @@ use clap::{Parser, Subcommand};
 #[command(about = "AWS wastedetection cli", long_about = None)]
 
 pub struct Cli {
- /// the Subcommand
- #[command(subcommand)]
- pub command: Commands,
+    /// AWS profile to use
+    #[arg(long)]
+    pub profile: Option<String>,
+
+    /// Optional input file override
+    #[arg(long)]
+    pub file: Option<String>,
+
+    #[command(subcommand)]
+    pub command: Commands,
 }
 
-/// Supported subcommands
 #[derive(Subcommand)]
 pub enum Commands {
-    /// Scan AWS Resources
-    Scan {
-        /// Optional AWS profile
-        #[arg(long)]
-        profile: Option<String>,
+    Ec2(Ec2Commands),
+    Vpc(VpcCommands),
+}
 
-        /// Optional local JSON file
-        #[arg(long)]
-        file: Option<String>,
-    },
+#[derive(Subcommand)]
+pub enum Ec2Commands {
+    Volumes,
+    Snapshots,
+    All,
+}
+
+#[derive(Subcommand)]
+pub enum VpcCommands {
+    Eips,
+    NatGateways,
+    All,
 }

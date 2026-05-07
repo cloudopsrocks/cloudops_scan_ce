@@ -1,5 +1,5 @@
+use crate::vpc::models::Address;
 use serde::Deserialize;
-
 /// Top level response from EC2 describe-addresses.
 #[derive(Deserialize)]
 pub struct DescribeAddresses {
@@ -22,8 +22,6 @@ pub struct Address {
     #[serde(rename = "NetworkInterfaceId", default)]
     pub network_interface_id: Option<String>,
 }
-
-use crate::vpc::models::Address;
 
 /// Return all unattached EC1 addresses.
 pub fn find_unattached_addresses(addresses: &[Address]) -> Vec<&Address> {
