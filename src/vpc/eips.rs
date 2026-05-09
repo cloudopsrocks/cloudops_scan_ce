@@ -1,5 +1,10 @@
-use crate::vpc::models::Address;
+//use crate::vpc::models::Address;
 use serde::Deserialize;
+
+pub fn run(profile: Option<&str>, file: Option<&str>) {
+    println!("EC2 EIP scan not implemented yet");
+}
+
 /// Top level response from EC2 describe-addresses.
 #[derive(Deserialize)]
 pub struct DescribeAddresses {

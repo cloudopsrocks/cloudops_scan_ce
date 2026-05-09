@@ -10,12 +10,12 @@ fn main() {
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::Ec2(cmd) => {
-            ec2::run(cmd, cli.profile.as_deref(), cli.file.as_deref());
+        Commands::Ec2 { command } => {
+            ec2::run(command, cli.profile.as_deref(), cli.file.as_deref());
         }
 
-        Commands::Vpc(cmd) => {
-            vpc::run(cmd, cli.profile.as_deref(), cli.file.as_deref());
+        Commands::Vpc { command } => {
+            vpc::run(command, cli.profile.as_deref(), cli.file.as_deref());
         }
     }
 }

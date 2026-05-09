@@ -20,8 +20,14 @@ pub struct Cli {
 
 #[derive(Subcommand)]
 pub enum Commands {
-    Ec2(Ec2Commands),
-    Vpc(VpcCommands),
+    Ec2 {
+        #[command(subcommand)]
+        command: Ec2Commands,
+    },
+    Vpc {
+        #[command(subcommand)]
+        command: VpcCommands,
+    },
 }
 
 #[derive(Subcommand)]

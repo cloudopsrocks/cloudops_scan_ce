@@ -1,5 +1,9 @@
 use serde::Deserialize;
 
+pub fn run(profile: Option<&str>, file: Option<&str>) {
+    print!("EC2 Volume scan not implemented yet")
+}
+
 /// Top level response from EC2 describe-volumes.
 #[derive(Deserialize)]
 pub struct DescribeVolumes {
