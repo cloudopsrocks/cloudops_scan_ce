@@ -1,7 +1,21 @@
 use serde::Deserialize;
 
-pub fn run(profile: Option<&str>, file: Option<&str>) {
-    print!("EC2 Volume scan not implemented yet")
+use crate::aws;
+
+pub fn run(profile: Option<&str>, file: Option<&str>) -> Result<(), Box<dyn std::error::Error>> {
+    let json_output = if let Some(file_path) = file {
+        aws::read_json_file(file_path)
+    } else {
+        aws::get_volumes_json(profile)
+    };
+
+    let parsed: DescribeVolumes = serde_json::from_str(&json_output)?;
+    let unattached_volumes = find_unattached_volumes(&parsed.volumes);
+
+    for v in unattached_volumes {
+        println!("Volume {} is unattached", v.volume_id);
+    }
+    Ok(())
 }
 
 /// Top level response from EC2 describe-volumes.
@@ -26,4 +40,14 @@ pub struct Volume {
 
 /// An EBS volume attachment.
 #[derive(Deserialize)]
-pub struct Attachment {}
+pub struct Attachment {
+    #[serde(rename = "InstanceId")]
+    pub instance_id: String,
+}
+
+fn find_unattached_volumes(volumes: &[Volume]) -> Vec<&Volume> {
+    volumes
+        .iter()
+        .filter(|v| v.attachments.is_empty())
+        .collect()
+}

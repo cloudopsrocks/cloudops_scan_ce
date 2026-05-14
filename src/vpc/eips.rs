@@ -28,7 +28,7 @@ pub struct Address {
     pub network_interface_id: Option<String>,
 }
 
-/// Return all unattached EC1 addresses.
+/// Return all unattached EC2 addresses.
 pub fn find_unattached_addresses(addresses: &[Address]) -> Vec<&Address> {
     addresses
         .iter()
