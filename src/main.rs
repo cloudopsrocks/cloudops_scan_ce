@@ -6,16 +6,18 @@ mod vpc;
 use clap::Parser;
 use cli::{Cli, Commands};
 
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
 
     match cli.command {
         Commands::Ec2 { command } => {
-            ec2::run(command, cli.profile.as_deref(), cli.file.as_deref());
+            ec2::run(command, cli.profile.as_deref(), cli.file.as_deref())?;
         }
 
         Commands::Vpc { command } => {
-            vpc::run(command, cli.profile.as_deref(), cli.file.as_deref());
+            vpc::run(command, cli.profile.as_deref(), cli.file.as_deref())?;
         }
     }
+
+    Ok(())
 }
