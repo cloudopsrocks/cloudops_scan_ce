@@ -175,7 +175,7 @@ Planned scan targets include:
 * Unattached Elastic IPs
 * Idle NAT Gateways
 
-Future editions will include additional scan types, enhanced reporting, and a terminal user interface (TUI).
+Future editions will include additional scan types, enhanced reporting, and maybe even a terminal user interface (TUI).
 
 ---
 
@@ -184,4 +184,3 @@ Future editions will include additional scan types, enhanced reporting, and a te
 Bug reports, feature requests, and pull requests are welcome.
 
 If CloudOps Scan CE helps you reduce AWS costs, consider starring the repository and sharing it with others.
-
