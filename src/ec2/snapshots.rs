@@ -23,8 +23,8 @@ pub fn run(profile: Option<&str>, file: Option<&str>) -> Result<(), Box<dyn std:
 
         for snapshot in old_snapshots {
             println!(
-                "Snapshot {} created {}",
-                snapshot.snapshot_id, snapshot.start_time
+                "Snapshot {} Created {} Description {}",
+                snapshot.snapshot_id, snapshot.start_time, snapshot.description
             );
         }
     }
@@ -50,6 +50,9 @@ pub struct Snapshot {
 
     #[serde(rename = "StartTime")]
     pub start_time: String,
+
+    #[serde(rename = "Description")]
+    pub description: String,
 
     #[serde(rename = "VolumeSize")]
     pub volume_size: i32,
