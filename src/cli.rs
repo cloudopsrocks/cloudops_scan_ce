@@ -4,7 +4,6 @@ use clap::{Parser, Subcommand};
 #[derive(Parser)]
 #[command(name = "cloudops-scan-ce")]
 #[command(about = "AWS wastedetection cli", long_about = None)]
-
 pub struct Cli {
     /// AWS profile to use
     #[arg(long)]
