@@ -45,17 +45,11 @@ pub struct Snapshot {
     #[serde(rename = "SnapshotId")]
     pub snapshot_id: String,
 
-    #[serde(rename = "VolumeId")]
-    pub volume_id: String,
-
     #[serde(rename = "StartTime")]
     pub start_time: String,
 
     #[serde(rename = "Description")]
     pub description: String,
-
-    #[serde(rename = "VolumeSize")]
-    pub volume_size: i32,
 }
 
 /// Return snapshots older than the defined review period.

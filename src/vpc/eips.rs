@@ -1,3 +1,5 @@
+use std::time::Instant;
+
 //use crate::vpc::models::Address;
 use serde::Deserialize;
 
@@ -14,8 +16,21 @@ pub fn run(profile: Option<&str>, file: Option<&str>) -> Result<(), Box<dyn std:
     let unattached_ips = find_unattached_addresses(&parsed.addresses);
 
     for a in unattached_ips {
-        println!("Elastic IP {} is unattached", a.allocation_id);
+        println!(
+            "Elastic IP {} ({}) is unattached",
+            a.allocation_id, a.public_ip
+        );
+        if let Some(instance_id) = &a.instance_id {
+            println!("  Associated with instance: {}", instance_id);
+        }
+        if let Some(network_interface_id) = &a.network_interface_id {
+            println!(
+                "  Associated with network interface: {}",
+                network_interface_id
+            );
+        }
     }
+
     Ok(())
 }
 

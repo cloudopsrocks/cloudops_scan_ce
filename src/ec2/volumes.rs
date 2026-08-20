@@ -13,7 +13,10 @@ pub fn run(profile: Option<&str>, file: Option<&str>) -> Result<(), Box<dyn std:
     let unattached_volumes = find_unattached_volumes(&parsed.volumes);
 
     for v in unattached_volumes {
-        println!("Volume {} is unattached", v.volume_id);
+        match v.size {
+            Some(size) => println!("Volume {} is unattached (size: {})", v.volume_id, size),
+            None => println!("Volume {} is unattached (size: unknown)", v.volume_id),
+        }
     }
     Ok(())
 }
@@ -32,7 +35,7 @@ pub struct Volume {
     pub volume_id: String,
 
     #[serde(rename = "Size", default)]
-    pub size: Option<i32>,
+    pub size: Option<i64>,
 
     #[serde(rename = "Attachments", default)]
     pub attachments: Vec<Attachment>,
@@ -40,10 +43,7 @@ pub struct Volume {
 
 /// An EBS volume attachment.
 #[derive(Deserialize)]
-pub struct Attachment {
-    #[serde(rename = "InstanceId")]
-    pub instance_id: String,
-}
+pub struct Attachment {}
 
 fn find_unattached_volumes(volumes: &[Volume]) -> Vec<&Volume> {
     volumes

@@ -20,8 +20,8 @@ pub fn run(profile: Option<&str>, file: Option<&str>) -> Result<(), Box<dyn std:
 
         for nat in active_nat_gateways {
             println!(
-                "NAT Gateway {} is active and should be reviewed for usage",
-                nat.nat_gateway_id
+                "NAT Gateway {} is active in VPC {}, subnet {} and should be reviewed for usage",
+                nat.nat_gateway_id, nat.vpc_id, nat.subnet_id
             );
         }
     }
